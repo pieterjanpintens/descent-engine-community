@@ -1,4 +1,16 @@
 {
   "format": 1,
-  "packages": []
+  "packages": [
+    {
+      "id": "arutha.finding-the-lost-scroll",
+      "type": "campaign",
+      "name": "Finding the lost Scroll",
+      "author": "Arutha",
+      "description": "",
+      "version": "1.0.0",
+      "url": "https://raw.githubusercontent.com/pieterjanpintens/descent-engine-community/main/packages/arutha.finding-the-lost-scroll/arutha.finding-the-lost-scroll-1.0.0.descentpkg",
+      "sha256": "d872ec392eb5d47bbe5d6f987717a99650674f7e2bc917fc20cdaeebb01edcc2",
+      "size_bytes": 1678452
+    }
+  ]
 }
