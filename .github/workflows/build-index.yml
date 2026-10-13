@@ -1,0 +1,52 @@
+name: Build the catalog
+
+# After a merge: index.json (what the app shows) and owners.json (who published what) are rebuilt from packages/.
+on:
+  push:
+    branches: [main]
+    paths:
+      - "packages/**"
+      - "external.json"
+      - "tools/**"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: read
+
+concurrency:
+  group: build-index
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # New ids are recorded as owned by whoever opened the merged pull request (or, for a direct push, whoever pushed).
+      - name: Who submitted
+        id: who
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          login="$(gh api "repos/${GITHUB_REPOSITORY}/commits/${GITHUB_SHA}/pulls" --jq '.[0].user.login // empty' 2>/dev/null || true)"
+          echo "login=${login:-$GITHUB_ACTOR}" >> "$GITHUB_OUTPUT"
+
+      - name: Rebuild index.json
+        env:
+          SUBMITTER: ${{ steps.who.outputs.login }}
+        run: python3 tools/build_index.py --submitter "$SUBMITTER"
+
+      - name: Commit
+        run: |
+          if git diff --quiet -- index.json owners.json; then
+            echo "The catalog is up to date."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.json owners.json
+          git commit -m "Rebuild the catalog"
+          git push

@@ -1,0 +1,61 @@
+name: Check submission
+
+# Runs on every pull request, with a read-only token and no secrets: the submission is DATA that gets inspected, nothing
+# from it is executed. The checking scripts come from the trusted copy (the base branch), never from the pull request.
+on:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  rules:
+    name: Only adds packages, by their owner
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Trusted copy (the checks)
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.base.sha }}
+          path: trusted
+
+      - name: The submission
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          path: submission
+          fetch-depth: 0
+
+      - name: Check
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          PR_AUTHOR: ${{ github.event.pull_request.user.login }}
+        run: python3 trusted/tools/check_submission.py --repo submission --base "$BASE_SHA" --author "$PR_AUTHOR" --owners trusted/owners.json
+
+  validate:
+    name: Packages pass the app's own check
+    runs-on: ubuntu-24.04
+    container:
+      image: barichello/godot-ci:4.7.2
+    steps:
+      - name: The submission
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          path: submission
+
+      # The validator is the app's own package check (the one that runs before a player installs anything).
+      - name: The app
+        uses: actions/checkout@v4
+        with:
+          repository: pieterjanpintens/descent-engine
+          path: engine
+
+      - name: Validate every package
+        run: |
+          if ! find submission/packages -name '*.descentpkg' | grep -q .; then
+            echo "No packages in this pull request's tree - nothing to validate."
+            exit 0
+          fi
+          godot --headless --path engine --import > /dev/null 2>&1 || true
+          godot --headless --path engine res://tools/community/validate_packages.tscn -- "$GITHUB_WORKSPACE/submission/packages"
