@@ -19,6 +19,23 @@ RAW_BASE = "https://raw.githubusercontent.com/%s/%s/" % (os.environ.get("GITHUB_
                                                          os.environ.get("CATALOG_BRANCH", "main"))
 
 
+# Same rules as the app (CampaignInfo): known language codes only, each once, at most 8; play time 0..6000 minutes.
+LANGUAGES = ("en", "es", "fr", "de", "nl", "it", "pt", "pl")
+MAX_MINUTES = 6000
+
+
+def clean_languages(raw) -> list:
+    wanted = [str(item).strip().lower() for item in raw] if isinstance(raw, list) else []
+    return [code for code in LANGUAGES if code in wanted]
+
+
+def clean_minutes(raw) -> int:
+    try:
+        return max(0, min(MAX_MINUTES, int(raw)))
+    except (TypeError, ValueError):
+        return 0
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--submitter", default="")
@@ -60,6 +77,8 @@ def main() -> int:
                 "url": RAW_BASE + relative,
                 "sha256": catalog.sha256_of(path),
                 "size_bytes": os.path.getsize(path),
+                "languages": clean_languages(manifest.get("languages", [])),
+                "duration_minutes": clean_minutes(manifest.get("duration_minutes", 0)),
             })
     external = catalog.load_json(os.path.join(ROOT, "external.json"), {"packages": []})
     entries.extend(entry for entry in external.get("packages", []) if isinstance(entry, dict))
