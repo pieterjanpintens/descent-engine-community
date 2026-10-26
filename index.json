@@ -10,7 +10,9 @@
       "version": "1.0.0",
       "url": "https://raw.githubusercontent.com/pieterjanpintens/descent-engine-community/main/packages/pieterjanpintens.army-of-the-damned/pieterjanpintens.army-of-the-damned-1.0.0.descentpkg",
       "sha256": "c650acd72459513db33f80ad61f958926e756abd1c98999801e6e77ee4cb1ea2",
-      "size_bytes": 27810421
+      "size_bytes": 27810421,
+      "languages": [],
+      "duration_minutes": 0
     },
     {
       "id": "pieterjanpintens.army-of-the-damned",
@@ -21,7 +23,11 @@
       "version": "1.0.1",
       "url": "https://raw.githubusercontent.com/pieterjanpintens/descent-engine-community/main/packages/pieterjanpintens.army-of-the-damned/pieterjanpintens.army-of-the-damned-1.0.1.descentpkg",
       "sha256": "900158bf39d469d11789a4d5643d3d34417734ab8cd9fc1ee17d350779fdd79a",
-      "size_bytes": 23596028
+      "size_bytes": 23596028,
+      "languages": [
+        "en"
+      ],
+      "duration_minutes": 120
     },
     {
       "id": "arutha.finding-the-lost-scroll",
