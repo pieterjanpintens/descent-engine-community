@@ -47,6 +47,23 @@
       "duration_minutes": 120
     },
     {
+      "id": "pieterjanpintens.army-of-the-damned",
+      "type": "campaign",
+      "name": "Army of the Damned",
+      "author": "pieterjanpintens",
+      "description": "All credits go to https://drive.google.com/drive/folders/1MyAVOpmtQsTEZbhckQKcOIjuOMUg2SzV",
+      "version": "1.1.1",
+      "url": "https://raw.githubusercontent.com/pieterjanpintens/descent-engine-community/main/packages/pieterjanpintens.army-of-the-damned/pieterjanpintens.army-of-the-damned-1.1.1.descentpkg",
+      "sha256": "a730ee395adaaac1ec20c30acc6926cc1379a04df55400d16aab7f3f9afe82cd",
+      "size_bytes": 23663418,
+      "languages": [
+        "en",
+        "es",
+        "nl"
+      ],
+      "duration_minutes": 120
+    },
+    {
       "id": "arutha.finding-the-lost-scroll",
       "type": "campaign",
       "name": "Finding the lost Scroll",
